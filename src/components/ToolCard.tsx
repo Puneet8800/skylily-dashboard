@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Box, FlaskConical, ArrowUpRight, Download,
@@ -58,129 +58,151 @@ export default function ToolCard({ tool, index, onClick }: ToolCardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
+  const [borderRotation, setBorderRotation] = useState(0);
   
-  const statusConfig: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; className: string }> = {
-    stable: { variant: 'default', className: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20' },
-    beta: { variant: 'secondary', className: 'bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20' },
-    alpha: { variant: 'destructive', className: 'bg-rose-500/10 text-rose-400 border-rose-500/20 hover:bg-rose-500/20' },
+  const statusConfig: Record<string, { className: string }> = {
+    stable: { className: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+    beta: { className: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
+    alpha: { className: 'bg-rose-500/10 text-rose-400 border-rose-500/20' },
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    setPosition({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
-  };
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    setPosition({ x, y });
+    
+    // Calculate rotation for animated border based on mouse position
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI);
+    setBorderRotation(angle);
+  }, []);
 
   return (
     <motion.div
       ref={containerRef}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05, ease: [0.25, 0.4, 0.25, 1] }}
-      whileHover={{ y: -6, scale: 1.02 }}
+      transition={{ duration: 0.4, delay: index * 0.04, ease: [0.25, 0.4, 0.25, 1] }}
+      whileHover={{ y: -4 }}
       whileTap={{ scale: 0.98 }}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
-      className={cn(
-        'relative overflow-hidden rounded-2xl cursor-pointer group',
-        'bg-gradient-to-b from-white/[0.05] to-white/[0.02]',
-        'border border-white/[0.08]',
-        'transition-all duration-300',
-        'hover:border-teal-500/30 hover:shadow-[0_8px_40px_-12px_rgba(20,184,166,0.25)]'
-      )}
+      className="relative cursor-pointer group"
     >
-      {/* Spotlight Effect */}
-      <div
-        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-500"
+      {/* Animated gradient border */}
+      <div 
+        className="absolute -inset-[1px] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{
-          opacity: isHovered ? 1 : 0,
-          background: `radial-gradient(500px circle at ${position.x}px ${position.y}px, rgba(20, 184, 166, 0.08), transparent 40%)`,
+          background: `conic-gradient(from ${borderRotation}deg at 50% 50%, 
+            rgba(20, 184, 166, 0.5) 0deg,
+            rgba(6, 182, 212, 0.3) 90deg,
+            transparent 180deg,
+            rgba(20, 184, 166, 0.2) 270deg,
+            rgba(20, 184, 166, 0.5) 360deg
+          )`,
         }}
       />
       
-      {/* Gradient border effect */}
-      <div
-        className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500"
-        style={{
-          opacity: isHovered ? 0.6 : 0,
-          background: `linear-gradient(135deg, rgba(20, 184, 166, 0.1), transparent, rgba(245, 158, 11, 0.05))`,
-        }}
-      />
-      
-      {/* Content */}
-      <div className="relative z-10 p-5">
-        <div className="flex items-start justify-between mb-3">
-          <motion.div 
-            className={cn(
-              'p-2.5 rounded-xl',
-              'bg-gradient-to-br from-teal-500/10 to-cyan-500/10',
-              'text-teal-400 group-hover:text-teal-300',
-              'border border-teal-500/10 group-hover:border-teal-500/20',
-              'transition-all duration-300'
-            )}
-            whileHover={{ scale: 1.05, rotate: 5 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-          >
-            <Icon size={20} strokeWidth={1.5} />
-          </motion.div>
-          
-          {tool.status && (
-            <Badge 
-              variant="outline"
+      {/* Card background */}
+      <div className={cn(
+        "relative rounded-xl overflow-hidden",
+        "bg-zinc-900/80 backdrop-blur-sm",
+        "border border-white/[0.06]",
+        "group-hover:border-transparent",
+        "transition-all duration-300"
+      )}>
+        {/* Spotlight Effect */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, rgba(20, 184, 166, 0.06), transparent 40%)`,
+          }}
+        />
+        
+        {/* Glow effect */}
+        <div
+          className="pointer-events-none absolute -inset-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl"
+          style={{
+            background: `radial-gradient(300px circle at ${position.x}px ${position.y}px, rgba(20, 184, 166, 0.1), transparent 50%)`,
+          }}
+        />
+        
+        {/* Content */}
+        <div className="relative z-10 p-5">
+          <div className="flex items-start justify-between mb-3">
+            <motion.div 
               className={cn(
-                'text-[10px] uppercase tracking-wider font-medium',
-                statusConfig[tool.status]?.className || statusConfig.stable.className
+                'p-2.5 rounded-lg',
+                'bg-gradient-to-br from-teal-500/15 to-cyan-500/10',
+                'text-teal-400 group-hover:text-teal-300',
+                'border border-teal-500/10 group-hover:border-teal-500/25',
+                'transition-all duration-300'
               )}
+              whileHover={{ scale: 1.05, rotate: 5 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
             >
-              {tool.status}
-            </Badge>
-          )}
+              <Icon size={18} strokeWidth={1.5} />
+            </motion.div>
+            
+            {tool.status && (
+              <Badge 
+                variant="outline"
+                className={cn(
+                  'text-[10px] uppercase tracking-wider font-medium px-2 py-0.5',
+                  statusConfig[tool.status]?.className || statusConfig.stable.className
+                )}
+              >
+                {tool.status}
+              </Badge>
+            )}
+            
+            {tool.version && !tool.status && (
+              <span className="text-[10px] text-zinc-500 font-mono bg-zinc-800/60 px-1.5 py-0.5 rounded">
+                v{tool.version}
+              </span>
+            )}
+          </div>
           
-          {tool.version && !tool.status && (
-            <span className="text-xs text-zinc-500 font-mono bg-zinc-800/50 px-2 py-0.5 rounded-md">
-              v{tool.version}
-            </span>
-          )}
-        </div>
-        
-        <h3 className="font-semibold text-white mb-1.5 group-hover:text-teal-50 transition-colors">
-          {tool.name}
-        </h3>
-        
-        <p className="text-sm text-zinc-400 mb-4 line-clamp-2 group-hover:text-zinc-300 transition-colors">
-          {tool.description}
-        </p>
-        
-        <div className="flex items-center justify-between">
-          {tool.tests !== undefined && (
-            <div className="flex items-center gap-1.5 text-xs text-zinc-500 group-hover:text-zinc-400 transition-colors">
-              <FlaskConical size={13} className="text-teal-500/70" />
-              <span>{tool.tests} tests</span>
-            </div>
-          )}
+          <h3 className="font-medium text-[15px] text-white mb-1 group-hover:text-teal-50 transition-colors tracking-tight">
+            {tool.name}
+          </h3>
           
-          {tool.downloads !== undefined && (
-            <div className="flex items-center gap-1.5 text-xs text-zinc-500 group-hover:text-zinc-400 transition-colors">
-              <Download size={13} className="text-amber-500/70" />
-              <span>{tool.downloads.toLocaleString()}</span>
-            </div>
-          )}
+          <p className="text-[13px] text-zinc-500 mb-4 line-clamp-2 leading-relaxed group-hover:text-zinc-400 transition-colors">
+            {tool.description}
+          </p>
           
-          <motion.div
-            className="ml-auto"
-            initial={{ opacity: 0.5, x: -5 }}
-            whileHover={{ opacity: 1, x: 0 }}
-          >
-            <ArrowUpRight 
-              size={16} 
-              className="text-zinc-600 group-hover:text-teal-400 transition-all duration-300" 
-            />
-          </motion.div>
+          <div className="flex items-center justify-between">
+            {tool.tests !== undefined && (
+              <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 group-hover:text-zinc-400 transition-colors">
+                <FlaskConical size={12} className="text-teal-500/70" />
+                <span>{tool.tests} tests</span>
+              </div>
+            )}
+            
+            {tool.downloads !== undefined && (
+              <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 group-hover:text-zinc-400 transition-colors">
+                <Download size={12} className="text-amber-500/70" />
+                <span>{tool.downloads.toLocaleString()}</span>
+              </div>
+            )}
+            
+            <motion.div
+              className="ml-auto"
+              initial={{ opacity: 0, x: -4 }}
+              animate={{ opacity: isHovered ? 1 : 0.4, x: isHovered ? 0 : -4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ArrowUpRight 
+                size={14} 
+                className="text-zinc-600 group-hover:text-teal-400 transition-colors duration-300" 
+              />
+            </motion.div>
+          </div>
         </div>
       </div>
     </motion.div>

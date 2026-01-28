@@ -123,7 +123,9 @@ export default function Home() {
     <div className="min-h-screen relative">
       {/* Background Effects */}
       <div className="mesh-gradient" />
-      <div className="bg-grid-pattern fixed inset-0 pointer-events-none opacity-30" />
+      <div className="mesh-gradient-layer" />
+      <div className="noise-overlay" />
+      <div className="bg-grid-pattern fixed inset-0 pointer-events-none opacity-[0.02]" />
       
       {/* Content */}
       <div className="relative z-10 px-4 py-8 md:px-8 lg:px-16 max-w-[1600px] mx-auto">
