@@ -1,9 +1,10 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Rocket, CheckCircle2, GitCommit, AlertTriangle, Hammer, 
-  GitPullRequest, Activity, Bell, Clock
+  GitPullRequest, Activity, Bell, Clock, ChevronDown
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -40,6 +41,9 @@ const typeConfig: Record<string, { color: string; bg: string; border: string }> 
 };
 
 export default function ActivityFeed({ activities }: ActivityFeedProps) {
+  const [showAll, setShowAll] = useState(false);
+  const displayedActivities = showAll ? activities : activities.slice(0, 5);
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -65,52 +69,62 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
       
       {/* Activity List */}
       <div className="space-y-3">
-        {activities.map((activity, index) => {
-          const Icon = iconMap[activity.icon] || Activity;
-          const config = typeConfig[activity.type] || typeConfig.deploy;
-          
-          return (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 + index * 0.05 }}
-              whileHover={{ x: 4 }}
-              className={cn(
-                "flex items-start gap-3 p-3 rounded-xl cursor-pointer",
-                "bg-white/[0.01] border border-transparent",
-                "hover:bg-white/[0.03] hover:border-white/[0.05] transition-all"
-              )}
-            >
-              <div className={cn("p-2 rounded-lg shrink-0", config.bg, config.border, 'border')}>
-                <Icon size={14} className={config.color} />
-              </div>
-              
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-white/90 line-clamp-1">{activity.message}</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <Clock size={10} className="text-zinc-600" />
-                  <span className="text-xs text-zinc-500">{activity.time}</span>
+        <AnimatePresence mode="popLayout">
+          {displayedActivities.map((activity, index) => {
+            const Icon = iconMap[activity.icon] || Activity;
+            const config = typeConfig[activity.type] || typeConfig.deploy;
+            
+            return (
+              <motion.div
+                key={`${activity.message}-${index}`}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ delay: index * 0.03 }}
+                whileHover={{ x: 4 }}
+                className={cn(
+                  "flex items-start gap-3 p-3 rounded-xl cursor-pointer",
+                  "bg-white/[0.01] border border-transparent",
+                  "hover:bg-white/[0.03] hover:border-white/[0.05] transition-all"
+                )}
+              >
+                <div className={cn("p-2 rounded-lg shrink-0", config.bg, config.border, 'border')}>
+                  <Icon size={14} className={config.color} />
                 </div>
-              </div>
-            </motion.div>
-          );
-        })}
+                
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-white/90 line-clamp-1">{activity.message}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Clock size={10} className="text-zinc-600" />
+                    <span className="text-xs text-zinc-500">{activity.time}</span>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
       
       {/* View All Button */}
-      <motion.button
-        whileHover={{ scale: 1.01 }}
-        whileTap={{ scale: 0.99 }}
-        className={cn(
-          "w-full mt-4 py-3 rounded-xl text-sm font-medium",
-          "bg-white/[0.02] border border-white/[0.05]",
-          "text-zinc-400 hover:text-white hover:bg-white/[0.04] hover:border-white/[0.08]",
-          "transition-all"
-        )}
-      >
-        View all activity →
-      </motion.button>
+      {activities.length > 5 && (
+        <motion.button
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.99 }}
+          onClick={() => setShowAll(!showAll)}
+          className={cn(
+            "w-full mt-4 py-3 rounded-xl text-sm font-medium",
+            "bg-white/[0.02] border border-white/[0.05]",
+            "text-zinc-400 hover:text-white hover:bg-white/[0.04] hover:border-white/[0.08]",
+            "transition-all flex items-center justify-center gap-2"
+          )}
+        >
+          {showAll ? 'Show less' : `View all activity (${activities.length})`}
+          <ChevronDown 
+            size={14} 
+            className={cn("transition-transform", showAll && "rotate-180")} 
+          />
+        </motion.button>
+      )}
     </motion.div>
   );
 }

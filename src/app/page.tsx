@@ -158,6 +158,7 @@ export default function Home() {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => window.open('https://github.com/Puneet8800/skylily-smart-router#readme', '_blank')}
               className="hidden sm:flex bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.06] text-white"
             >
               <Terminal size={14} className="mr-2" />
@@ -166,17 +167,11 @@ export default function Home() {
             
             <Button
               variant="outline"
-              asChild
+              onClick={() => window.open('https://github.com/Puneet8800', '_blank')}
               className="bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.06] text-white"
             >
-              <a
-                href="https://github.com/Puneet8800"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Github size={16} className="sm:mr-2" />
-                <span className="hidden sm:inline">GitHub</span>
-              </a>
+              <Github size={16} className="sm:mr-2" />
+              <span className="hidden sm:inline">GitHub</span>
             </Button>
           </div>
         </motion.header>

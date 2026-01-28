@@ -195,12 +195,14 @@ export default function ToolModal({ tool, onClose }: ToolModalProps) {
             {tool.github && (
               <Button
                 variant="outline"
+                asChild
                 className="flex-1 bg-white/[0.03] border-white/[0.1] hover:bg-white/[0.08] hover:border-white/20 text-white"
-                onClick={() => window.open(tool.github, '_blank')}
               >
-                <Github size={16} className="mr-2" />
-                View Source
-                <ExternalLink size={12} className="ml-2 opacity-50" />
+                <a href={tool.github} target="_blank" rel="noopener noreferrer">
+                  <Github size={16} className="mr-2" />
+                  View Source
+                  <ExternalLink size={12} className="ml-2 opacity-50" />
+                </a>
               </Button>
             )}
             
@@ -213,7 +215,7 @@ export default function ToolModal({ tool, onClose }: ToolModalProps) {
                 'shadow-lg shadow-teal-500/20'
               )}
               onClick={() => {
-                alert(`Running: ${tool.name}`);
+                navigator.clipboard.writeText(`${tool.name} --help`);
                 onClose();
               }}
             >
