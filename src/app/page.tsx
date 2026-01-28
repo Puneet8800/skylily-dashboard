@@ -188,90 +188,121 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="mb-16"
         >
-          <div className="text-center mb-10">
+          <div className="text-center mb-12">
+            {/* Badge */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 mb-6"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+              </span>
+              <span className="text-xs font-medium text-teal-300 tracking-wide">v2.0 • Production Ready</span>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5 tracking-tight">
                 <span className="gradient-text-premium">Build Smarter</span>
               </h2>
             </motion.div>
-            <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-              A comprehensive toolkit for AI development, orchestration, and deployment. 
-              Powered by intelligent routing and automated workflows.
-            </p>
+            <motion.p 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="text-zinc-400 text-base md:text-lg max-w-xl mx-auto leading-relaxed"
+            >
+              A comprehensive toolkit for AI development, orchestration, and deployment.
+              <span className="text-zinc-500"> Powered by intelligent routing and automated workflows.</span>
+            </motion.p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Total Tools */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              whileHover={{ y: -4, scale: 1.02 }}
-              className={cn(
-                "rounded-2xl p-6 text-center",
-                "bg-gradient-to-b from-white/[0.05] to-white/[0.02]",
-                "border border-white/[0.08]",
-                "hover:border-teal-500/30 hover:shadow-[0_0_40px_-10px_rgba(20,184,166,0.2)]",
-                "transition-all duration-300"
-              )}
+              transition={{ delay: 0.35, type: 'spring', stiffness: 100 }}
+              whileHover={{ y: -6 }}
+              className="group relative"
             >
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <Wrench className="text-teal-400" size={22} />
-                <span className="text-zinc-400">Total Tools</span>
+              <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-b from-teal-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className={cn(
+                "relative rounded-2xl p-6 text-center",
+                "bg-zinc-900/80 backdrop-blur-sm",
+                "border border-white/[0.06] group-hover:border-teal-500/20",
+                "transition-all duration-300"
+              )}>
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <div className="p-1.5 rounded-lg bg-teal-500/10 group-hover:bg-teal-500/15 transition-colors">
+                    <Wrench className="text-teal-400" size={18} />
+                  </div>
+                  <span className="text-sm text-zinc-400 font-medium">Total Tools</span>
+                </div>
+                <p className="text-5xl font-bold text-white tracking-tight">
+                  <AnimatedCounter value={totalTools} />
+                </p>
               </div>
-              <p className="text-5xl font-bold text-white">
-                <AnimatedCounter value={totalTools} />
-              </p>
             </motion.div>
             
             {/* Tests */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              whileHover={{ y: -4, scale: 1.02 }}
-              className={cn(
-                "rounded-2xl p-6 text-center",
-                "bg-gradient-to-b from-white/[0.05] to-white/[0.02]",
-                "border border-white/[0.08]",
-                "hover:border-emerald-500/30 hover:shadow-[0_0_40px_-10px_rgba(16,185,129,0.2)]",
-                "transition-all duration-300"
-              )}
+              transition={{ delay: 0.45, type: 'spring', stiffness: 100 }}
+              whileHover={{ y: -6 }}
+              className="group relative"
             >
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <FlaskConical className="text-emerald-400" size={22} />
-                <span className="text-zinc-400">Tests Passing</span>
+              <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-b from-emerald-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className={cn(
+                "relative rounded-2xl p-6 text-center",
+                "bg-zinc-900/80 backdrop-blur-sm",
+                "border border-white/[0.06] group-hover:border-emerald-500/20",
+                "transition-all duration-300"
+              )}>
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <div className="p-1.5 rounded-lg bg-emerald-500/10 group-hover:bg-emerald-500/15 transition-colors">
+                    <FlaskConical className="text-emerald-400" size={18} />
+                  </div>
+                  <span className="text-sm text-zinc-400 font-medium">Tests Passing</span>
+                </div>
+                <p className="text-5xl font-bold text-white tracking-tight">
+                  <AnimatedCounter value={totalTests} />
+                </p>
               </div>
-              <p className="text-5xl font-bold text-white">
-                <AnimatedCounter value={totalTests} />
-              </p>
             </motion.div>
             
             {/* Libraries */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              whileHover={{ y: -4, scale: 1.02 }}
-              className={cn(
-                "rounded-2xl p-6 text-center",
-                "bg-gradient-to-b from-white/[0.05] to-white/[0.02]",
-                "border border-white/[0.08]",
-                "hover:border-amber-500/30 hover:shadow-[0_0_40px_-10px_rgba(245,158,11,0.2)]",
-                "transition-all duration-300"
-              )}
+              transition={{ delay: 0.55, type: 'spring', stiffness: 100 }}
+              whileHover={{ y: -6 }}
+              className="group relative"
             >
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <Package className="text-amber-400" size={22} />
-                <span className="text-zinc-400">Utility Packages</span>
+              <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-b from-amber-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className={cn(
+                "relative rounded-2xl p-6 text-center",
+                "bg-zinc-900/80 backdrop-blur-sm",
+                "border border-white/[0.06] group-hover:border-amber-500/20",
+                "transition-all duration-300"
+              )}>
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <div className="p-1.5 rounded-lg bg-amber-500/10 group-hover:bg-amber-500/15 transition-colors">
+                    <Package className="text-amber-400" size={18} />
+                  </div>
+                  <span className="text-sm text-zinc-400 font-medium">Utility Packages</span>
+                </div>
+                <p className="text-5xl font-bold text-white tracking-tight">
+                  <AnimatedCounter value={totalLibraries} />
+                </p>
               </div>
-              <p className="text-5xl font-bold text-white">
-                <AnimatedCounter value={totalLibraries} />
-              </p>
             </motion.div>
           </div>
         </motion.section>
@@ -501,10 +532,12 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="text-center py-8 border-t border-white/[0.05]"
+          className="text-center py-10 border-t border-white/[0.04]"
         >
-          <p className="text-zinc-500 text-sm">
-            Built with <span className="text-teal-400">♥</span> by <span className="text-white">Skylily</span> • 
+          <p className="text-zinc-600 text-sm font-medium">
+            Built with <span className="text-teal-500">♥</span> by{' '}
+            <span className="text-zinc-400">Skylily</span>
+            <span className="mx-2 text-zinc-700">•</span>
             Running on M4 Pro Mac
           </p>
         </motion.footer>
