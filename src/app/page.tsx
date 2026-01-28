@@ -13,7 +13,6 @@ import ToolModal from '@/components/ToolModal';
 import CostsChart from '@/components/CostsChart';
 import SystemStatus from '@/components/SystemStatus';
 import ActivityFeed from '@/components/ActivityFeed';
-import { SystemWidget, DockerWidget, TailscaleWidget, ServicesWidget, QuickActions } from '@/components/widgets';
 
 import toolsData from '@/data/tools.json';
 
@@ -281,42 +280,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Live Metrics (Pulsed) */}
+        {/* Dashboard Grid */}
         <section className="py-16 px-6 border-t border-[#00ff00]/10">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="flex items-center justify-between gap-3 mb-8"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 border border-[#00ff00]/30 rounded-lg bg-[#00ff00]/5">
-                  <Activity size={20} className="text-[#00ff00]" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white font-mono">Live Metrics</h3>
-                  <p className="text-sm text-zinc-500 font-mono flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#00ff00] animate-pulse"></span>
-                    Powered by pulsed
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              <SystemWidget />
-              <DockerWidget />
-              <TailscaleWidget />
-              <ServicesWidget />
-              <QuickActions />
-              <CostsChart daily={toolsData.apiCosts.daily} monthly={toolsData.apiCosts.monthly} />
-            </div>
-          </div>
-        </section>
-
-        {/* Legacy System Status (keeping for comparison) */}
-        <section className="py-16 px-6 border-t border-zinc-800/30">
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -327,11 +292,11 @@ export default function Home() {
               <div className="p-2 border border-[#3b82f6]/30 rounded-lg bg-[#3b82f6]/5">
                 <BarChart3 size={20} className="text-[#3b82f6]" />
               </div>
-              <h3 className="text-2xl font-bold text-white font-mono">Static Dashboard</h3>
-              <span className="text-xs text-zinc-600 font-mono">(demo data)</span>
+              <h3 className="text-2xl font-bold text-white font-mono">System Status</h3>
             </motion.div>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <CostsChart daily={toolsData.apiCosts.daily} monthly={toolsData.apiCosts.monthly} />
               <SystemStatus 
                 uptime={toolsData.systemStatus.uptime}
                 memory={toolsData.systemStatus.memory}
