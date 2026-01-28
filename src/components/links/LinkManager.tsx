@@ -35,7 +35,7 @@ export default function LinkManager({ link, categories, onSave, onClose }: LinkM
   const [newCategory, setNewCategory] = useState('');
   const [showNewCategory, setShowNewCategory] = useState(false);
 
-  const allCategories = [...new Set([...defaultCategories, ...categories])];
+  const allCategories = Array.from(new Set([...defaultCategories, ...categories]));
 
   const handleSave = () => {
     if (formData.title && formData.url) {
