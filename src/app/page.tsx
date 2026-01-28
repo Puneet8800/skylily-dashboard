@@ -134,10 +134,10 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-lg text-zinc-400 max-w-2xl mx-auto mb-12 leading-relaxed"
+              className="text-lg text-zinc-300 max-w-2xl mx-auto mb-12 leading-relaxed"
             >
               A comprehensive toolkit for AI development, orchestration, and deployment.
-              <span className="text-zinc-500"> Powered by intelligent routing and automated workflows.</span>
+              <span className="text-zinc-400"> Powered by intelligent routing and automated workflows.</span>
             </motion.p>
             
             {/* Stats Grid - Multi-colored */}

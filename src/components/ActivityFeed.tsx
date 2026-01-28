@@ -86,10 +86,10 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-zinc-300 line-clamp-1 font-mono">{activity.message}</p>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <Clock size={10} className="text-zinc-600" />
-                    <span className="text-xs text-zinc-500 font-mono">{activity.time}</span>
+                  <p className="text-sm text-zinc-200 line-clamp-1">{activity.message}</p>
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <Clock size={10} className="text-zinc-500" />
+                    <span className="text-xs text-zinc-400">{activity.time}</span>
                   </div>
                 </div>
               </motion.div>

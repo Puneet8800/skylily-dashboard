@@ -109,16 +109,16 @@ export default function SystemStatus({ uptime, memory, cpu, dockerContainers }: 
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="flex items-center justify-between p-3 rounded-lg bg-black/30 border border-[#00ff00]/5 hover:border-[#00ff00]/20 transition-all"
+              className="flex items-center justify-between p-3 rounded-lg bg-black/30 border border-[#14b8a6]/5 hover:border-[#14b8a6]/20 transition-all"
             >
               <div className="flex items-center gap-3">
                 <div className={cn(
-                  "w-2 h-2 rounded-full",
-                  container.status === 'running' ? "bg-[#00ff00]" : "bg-zinc-600"
+                  "w-2.5 h-2.5 rounded-full",
+                  container.status === 'running' ? "bg-[#14b8a6]" : "bg-zinc-600"
                 )} />
-                <span className="text-sm text-white font-mono">{container.name}</span>
+                <span className="text-sm text-zinc-200">{container.name}</span>
               </div>
-              <span className="text-xs text-zinc-500 font-mono">:{container.port}</span>
+              <span className="text-xs text-zinc-400">:{container.port}</span>
             </motion.div>
           ))}
         </div>

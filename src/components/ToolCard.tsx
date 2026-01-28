@@ -154,14 +154,14 @@ export default function ToolCard({ tool, index, onClick }: ToolCardProps) {
         
         {/* Title */}
         <h3 
-          className="font-mono font-semibold text-white mb-1 transition-colors"
+          className="font-mono font-semibold text-white mb-2 transition-colors text-base"
           style={{ color: isHovered ? color.main : 'white' }}
         >
           {tool.name}
         </h3>
         
         {/* Description */}
-        <p className="text-sm text-zinc-500 mb-4 line-clamp-2 leading-relaxed">
+        <p className="text-sm text-zinc-400 mb-4 line-clamp-2 leading-relaxed">
           {tool.description}
         </p>
         
