@@ -29,10 +29,17 @@
     --ring: 120 100% 50%;
     --radius: 0.5rem;
     
-    /* Neon colors */
+    /* Neon colors - Multi-color palette like Tinkerer Club */
     --neon-green: #00ff00;
     --neon-cyan: #00ffff;
-    --neon-lime: #32cd32;
+    --neon-pink: #ff00ff;
+    --neon-purple: #a855f7;
+    --neon-blue: #3b82f6;
+    --neon-yellow: #facc15;
+    --neon-orange: #f97316;
+    --neon-red: #ef4444;
+    --neon-lime: #84cc16;
+    --neon-teal: #14b8a6;
     --terminal-green: #00ff41;
   }
 }

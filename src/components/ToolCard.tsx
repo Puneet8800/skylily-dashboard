@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Box, FlaskConical, ArrowUpRight, Download,
@@ -25,6 +25,7 @@ interface Tool {
   status?: string;
   github?: string;
   downloads?: number;
+  category?: string;
 }
 
 interface ToolCardProps {
@@ -48,6 +49,20 @@ const iconMap: Record<string, ElementType> = {
   'git-fork': GitFork, settings: Settings, sliders: Sliders, zap: Zap, box: Box
 };
 
+// Multi-color palette based on tool index or category
+const colorPalette = [
+  { main: '#00ff00', bg: 'rgba(0, 255, 0, 0.1)', border: 'rgba(0, 255, 0, 0.2)' },      // Green
+  { main: '#00ffff', bg: 'rgba(0, 255, 255, 0.1)', border: 'rgba(0, 255, 255, 0.2)' },  // Cyan
+  { main: '#a855f7', bg: 'rgba(168, 85, 247, 0.1)', border: 'rgba(168, 85, 247, 0.2)' }, // Purple
+  { main: '#f97316', bg: 'rgba(249, 115, 22, 0.1)', border: 'rgba(249, 115, 22, 0.2)' }, // Orange
+  { main: '#ec4899', bg: 'rgba(236, 72, 153, 0.1)', border: 'rgba(236, 72, 153, 0.2)' }, // Pink
+  { main: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)', border: 'rgba(59, 130, 246, 0.2)' }, // Blue
+  { main: '#facc15', bg: 'rgba(250, 204, 21, 0.1)', border: 'rgba(250, 204, 21, 0.2)' }, // Yellow
+  { main: '#14b8a6', bg: 'rgba(20, 184, 166, 0.1)', border: 'rgba(20, 184, 166, 0.2)' }, // Teal
+  { main: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.2)' },   // Red
+  { main: '#84cc16', bg: 'rgba(132, 204, 22, 0.1)', border: 'rgba(132, 204, 22, 0.2)' }, // Lime
+];
+
 const getIcon = (iconName: string): ElementType => {
   return iconMap[iconName] || Terminal;
 };
@@ -56,11 +71,16 @@ export default function ToolCard({ tool, index, onClick }: ToolCardProps) {
   const Icon = tool.icon ? getIcon(tool.icon) : Terminal;
   const [isHovered, setIsHovered] = useState(false);
   
-  const statusColors: Record<string, string> = {
-    stable: 'text-[#00ff00] border-[#00ff00]/30 bg-[#00ff00]/10',
-    beta: 'text-yellow-400 border-yellow-400/30 bg-yellow-400/10',
-    alpha: 'text-red-400 border-red-400/30 bg-red-400/10',
+  // Get color based on index for variety
+  const color = colorPalette[index % colorPalette.length];
+  
+  const statusColors: Record<string, { text: string; bg: string; border: string }> = {
+    stable: { text: '#00ff00', bg: 'rgba(0, 255, 0, 0.1)', border: 'rgba(0, 255, 0, 0.3)' },
+    beta: { text: '#facc15', bg: 'rgba(250, 204, 21, 0.1)', border: 'rgba(250, 204, 21, 0.3)' },
+    alpha: { text: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.3)' },
   };
+
+  const statusStyle = tool.status ? statusColors[tool.status] : statusColors.stable;
 
   return (
     <motion.div
@@ -76,36 +96,51 @@ export default function ToolCard({ tool, index, onClick }: ToolCardProps) {
     >
       {/* Glow effect on hover */}
       <div 
-        className={cn(
-          "absolute -inset-[1px] rounded-lg opacity-0 transition-opacity duration-300",
-          "bg-gradient-to-b from-[#00ff00]/20 to-transparent",
-          isHovered && "opacity-100"
-        )}
+        className="absolute -inset-[1px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{ 
+          background: `linear-gradient(180deg, ${color.bg} 0%, transparent 100%)`,
+          boxShadow: isHovered ? `0 0 30px ${color.bg}` : 'none'
+        }}
       />
       
       {/* Card */}
-      <div className={cn(
-        "relative rounded-lg p-4",
-        "bg-[#0a0a0a] border border-[#00ff00]/10",
-        "group-hover:border-[#00ff00]/40",
-        "transition-all duration-300"
-      )}>
+      <div 
+        className={cn(
+          "relative rounded-lg p-4",
+          "bg-[#0a0a0a]",
+          "transition-all duration-300"
+        )}
+        style={{
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: isHovered ? color.border : 'rgba(255, 255, 255, 0.06)'
+        }}
+      >
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
-          <div className={cn(
-            "p-2 rounded-md",
-            "bg-[#00ff00]/5 border border-[#00ff00]/20",
-            "group-hover:bg-[#00ff00]/10 group-hover:border-[#00ff00]/30",
-            "transition-all duration-300"
-          )}>
-            <Icon size={16} className="text-[#00ff00]" />
+          <div 
+            className="p-2 rounded-md transition-all duration-300"
+            style={{
+              background: color.bg,
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: color.border
+            }}
+          >
+            <Icon size={16} style={{ color: color.main }} />
           </div>
           
           {tool.status && (
-            <span className={cn(
-              "text-[10px] font-mono uppercase px-2 py-0.5 rounded border",
-              statusColors[tool.status] || statusColors.stable
-            )}>
+            <span 
+              className="text-[10px] font-mono uppercase px-2 py-0.5 rounded"
+              style={{
+                color: statusStyle.text,
+                background: statusStyle.bg,
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: statusStyle.border
+              }}
+            >
               {tool.status}
             </span>
           )}
@@ -118,7 +153,10 @@ export default function ToolCard({ tool, index, onClick }: ToolCardProps) {
         </div>
         
         {/* Title */}
-        <h3 className="font-mono font-semibold text-white mb-1 group-hover:text-[#00ff00] transition-colors">
+        <h3 
+          className="font-mono font-semibold text-white mb-1 transition-colors"
+          style={{ color: isHovered ? color.main : 'white' }}
+        >
           {tool.name}
         </h3>
         
@@ -131,24 +169,25 @@ export default function ToolCard({ tool, index, onClick }: ToolCardProps) {
         <div className="flex items-center justify-between">
           {tool.tests !== undefined && (
             <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-mono">
-              <FlaskConical size={12} className="text-[#00ff00]/70" />
+              <FlaskConical size={12} style={{ color: color.main, opacity: 0.7 }} />
               <span>{tool.tests} tests</span>
             </div>
           )}
           
           {tool.downloads !== undefined && (
             <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-mono">
-              <Download size={12} className="text-[#00ff00]/70" />
+              <Download size={12} style={{ color: color.main, opacity: 0.7 }} />
               <span>{tool.downloads.toLocaleString()}</span>
             </div>
           )}
           
           <ArrowUpRight 
             size={14} 
-            className={cn(
-              "ml-auto text-zinc-600 transition-all duration-300",
-              isHovered && "text-[#00ff00] translate-x-0.5 -translate-y-0.5"
-            )}
+            className="ml-auto transition-all duration-300"
+            style={{ 
+              color: isHovered ? color.main : '#52525b',
+              transform: isHovered ? 'translate(2px, -2px)' : 'none'
+            }}
           />
         </div>
       </div>

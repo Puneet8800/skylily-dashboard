@@ -44,16 +44,19 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
   const displayedActivities = showAll ? activities : activities.slice(0, 5);
   
   return (
-    <div className="card-terminal p-6">
+    <div className="rounded-lg p-6 bg-[#0a0a0a] border border-[#a855f7]/10">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="p-2 border border-[#00ff00]/30 rounded-lg bg-[#00ff00]/5">
-            <Activity size={18} className="text-[#00ff00]" />
+          <div className="p-2 border border-[#a855f7]/30 rounded-lg bg-[#a855f7]/5">
+            <Activity size={18} className="text-[#a855f7]" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-white font-mono">Activity Feed</h3>
-            <p className="text-xs text-zinc-500 font-mono status-live">LIVE</p>
+            <p className="text-xs text-[#a855f7] font-mono flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7] animate-pulse"></span>
+              LIVE
+            </p>
           </div>
         </div>
       </div>
@@ -101,8 +104,8 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
           onClick={() => setShowAll(!showAll)}
           className={cn(
             "w-full mt-4 py-2.5 rounded-lg text-sm font-mono",
-            "bg-[#00ff00]/5 border border-[#00ff00]/10",
-            "text-zinc-400 hover:text-[#00ff00] hover:border-[#00ff00]/30",
+            "bg-[#a855f7]/5 border border-[#a855f7]/10",
+            "text-zinc-400 hover:text-[#a855f7] hover:border-[#a855f7]/30",
             "transition-all flex items-center justify-center gap-2"
           )}
         >

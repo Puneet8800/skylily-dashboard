@@ -63,12 +63,12 @@ export default function CostsChart({ daily, monthly }: CostsChartProps) {
   const percentChange = -12.3; // Mock data
 
   return (
-    <div className="card-terminal p-6">
+    <div className="rounded-lg p-6 bg-[#0a0a0a] border border-[#facc15]/10">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="p-2 border border-[#00ff00]/30 rounded-lg bg-[#00ff00]/5">
-            <DollarSign size={18} className="text-[#00ff00]" />
+          <div className="p-2 border border-[#facc15]/30 rounded-lg bg-[#facc15]/5">
+            <DollarSign size={18} className="text-[#facc15]" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-white font-mono">API Costs</h3>
@@ -78,7 +78,7 @@ export default function CostsChart({ daily, monthly }: CostsChartProps) {
         
         <div className={cn(
           "flex items-center gap-1 px-2 py-1 rounded text-sm font-mono",
-          percentChange < 0 ? "text-[#00ff00] bg-[#00ff00]/10" : "text-red-400 bg-red-400/10"
+          percentChange < 0 ? "text-[#00ff00] bg-[#00ff00]/10" : "text-[#ef4444] bg-[#ef4444]/10"
         )}>
           {percentChange < 0 ? <TrendingDown size={14} /> : <TrendingUp size={14} />}
           {Math.abs(percentChange)}%

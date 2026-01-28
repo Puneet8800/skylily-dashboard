@@ -140,42 +140,48 @@ export default function Home() {
               <span className="text-zinc-500"> Powered by intelligent routing and automated workflows.</span>
             </motion.p>
             
-            {/* Stats Grid */}
+            {/* Stats Grid - Multi-colored */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
               className="grid grid-cols-3 gap-4 max-w-2xl mx-auto"
             >
-              <div className="card-terminal p-6 text-center">
+              <div className="p-6 text-center rounded-lg bg-[#0a0a0a] border border-[#00ff00]/20 hover:border-[#00ff00]/40 transition-all">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                  <Wrench size={18} className="text-[#00ff00]" />
+                  <div className="p-1.5 rounded bg-[#00ff00]/10">
+                    <Wrench size={16} className="text-[#00ff00]" />
+                  </div>
                   <span className="text-zinc-500 text-sm font-mono">tools</span>
                 </div>
-                <p className="text-4xl font-bold text-white font-mono">{totalTools}</p>
+                <p className="text-4xl font-bold text-[#00ff00] font-mono">{totalTools}</p>
               </div>
               
-              <div className="card-terminal p-6 text-center">
+              <div className="p-6 text-center rounded-lg bg-[#0a0a0a] border border-[#a855f7]/20 hover:border-[#a855f7]/40 transition-all">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                  <FlaskConical size={18} className="text-[#00ff00]" />
+                  <div className="p-1.5 rounded bg-[#a855f7]/10">
+                    <FlaskConical size={16} className="text-[#a855f7]" />
+                  </div>
                   <span className="text-zinc-500 text-sm font-mono">tests</span>
                 </div>
-                <p className="text-4xl font-bold text-white font-mono">{totalTests}</p>
+                <p className="text-4xl font-bold text-[#a855f7] font-mono">{totalTests}</p>
               </div>
               
-              <div className="card-terminal p-6 text-center">
+              <div className="p-6 text-center rounded-lg bg-[#0a0a0a] border border-[#00ffff]/20 hover:border-[#00ffff]/40 transition-all">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                  <Package size={18} className="text-[#00ff00]" />
+                  <div className="p-1.5 rounded bg-[#00ffff]/10">
+                    <Package size={16} className="text-[#00ffff]" />
+                  </div>
                   <span className="text-zinc-500 text-sm font-mono">packages</span>
                 </div>
-                <p className="text-4xl font-bold text-white font-mono">{totalLibraries}</p>
+                <p className="text-4xl font-bold text-[#00ffff] font-mono">{totalLibraries}</p>
               </div>
             </motion.div>
           </div>
         </section>
 
-        {/* Tech Stack Tags */}
-        <section className="py-8 px-6 border-y border-[#00ff00]/10">
+        {/* Tech Stack Tags - Multi-colored */}
+        <section className="py-8 px-6 border-y border-white/5">
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0 }}
@@ -184,9 +190,26 @@ export default function Home() {
               className="flex flex-wrap items-center justify-center gap-3"
             >
               <span className="text-zinc-500 text-sm font-mono mr-2">Tools we build:</span>
-              {['Clawdbot', 'Ollama', 'Docker', 'n8n', 'Tailscale', 'Home Assistant', 'Caddy', 'Redis'].map((tech, i) => (
-                <span key={tech} className="tech-tag">
-                  {tech}
+              {[
+                { name: 'Clawdbot', color: '#f97316' },
+                { name: 'Ollama', color: '#00ff00' },
+                { name: 'Docker', color: '#3b82f6' },
+                { name: 'n8n', color: '#ec4899' },
+                { name: 'Tailscale', color: '#00ffff' },
+                { name: 'Home Assistant', color: '#14b8a6' },
+                { name: 'Caddy', color: '#a855f7' },
+                { name: 'Redis', color: '#ef4444' },
+              ].map((tech) => (
+                <span 
+                  key={tech.name} 
+                  className="px-3 py-1 rounded-full text-xs font-mono border transition-all hover:scale-105"
+                  style={{
+                    color: tech.color,
+                    borderColor: `${tech.color}33`,
+                    background: `${tech.color}15`
+                  }}
+                >
+                  {tech.name}
                 </span>
               ))}
             </motion.div>
@@ -202,8 +225,8 @@ export default function Home() {
               className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8"
             >
               <div className="flex items-center gap-3">
-                <div className="p-2 border border-[#00ff00]/30 rounded-lg bg-[#00ff00]/5">
-                  <Zap size={20} className="text-[#00ff00]" />
+                <div className="p-2 border border-[#ec4899]/30 rounded-lg bg-[#ec4899]/5">
+                  <Zap size={20} className="text-[#ec4899]" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-white font-mono">Core Tools</h3>
@@ -266,8 +289,8 @@ export default function Home() {
               viewport={{ once: true }}
               className="flex items-center gap-3 mb-8"
             >
-              <div className="p-2 border border-[#00ff00]/30 rounded-lg bg-[#00ff00]/5">
-                <BarChart3 size={20} className="text-[#00ff00]" />
+              <div className="p-2 border border-[#3b82f6]/30 rounded-lg bg-[#3b82f6]/5">
+                <BarChart3 size={20} className="text-[#3b82f6]" />
               </div>
               <h3 className="text-2xl font-bold text-white font-mono">System Status</h3>
             </motion.div>
@@ -292,10 +315,10 @@ export default function Home() {
               
               {/* Utility Libraries */}
               <div className="lg:col-span-2">
-                <div className="card-terminal p-6">
+                <div className="rounded-lg p-6 bg-[#0a0a0a] border border-[#f97316]/10">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 border border-[#00ff00]/30 rounded-lg bg-[#00ff00]/5">
-                      <Code size={18} className="text-[#00ff00]" />
+                    <div className="p-2 border border-[#f97316]/30 rounded-lg bg-[#f97316]/5">
+                      <Code size={18} className="text-[#f97316]" />
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-white font-mono">Utility Libraries</h3>
@@ -304,23 +327,42 @@ export default function Home() {
                   </div>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                    {toolsData.utilityLibraries.slice(0, 12).map((lib, index) => (
-                      <motion.button
-                        key={lib.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.05 * index }}
-                        whileHover={{ x: 4 }}
-                        onClick={() => setSelectedTool({ ...lib, category: 'utility' })}
-                        className="flex items-center justify-between p-3 rounded-lg bg-[#00ff00]/5 border border-[#00ff00]/10 hover:border-[#00ff00]/30 transition-all text-left group"
-                      >
-                        <div className="min-w-0">
-                          <p className="text-sm font-mono text-[#00ff00] truncate">{lib.name}</p>
-                          <p className="text-xs text-zinc-500 truncate">{lib.description}</p>
-                        </div>
-                        <ExternalLink size={14} className="text-zinc-600 group-hover:text-[#00ff00] transition-colors shrink-0 ml-2" />
-                      </motion.button>
-                    ))}
+                    {toolsData.utilityLibraries.slice(0, 12).map((lib, index) => {
+                      const colors = [
+                        '#00ff00', '#00ffff', '#a855f7', '#ec4899', '#3b82f6', '#f97316',
+                        '#14b8a6', '#facc15', '#ef4444', '#84cc16', '#00ff00', '#00ffff'
+                      ];
+                      const color = colors[index % colors.length];
+                      return (
+                        <motion.button
+                          key={lib.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.05 * index }}
+                          whileHover={{ x: 4 }}
+                          onClick={() => setSelectedTool({ ...lib, category: 'utility' })}
+                          className="flex items-center justify-between p-3 rounded-lg transition-all text-left group"
+                          style={{
+                            background: `${color}08`,
+                            borderWidth: '1px',
+                            borderStyle: 'solid',
+                            borderColor: `${color}20`
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = `${color}50`;
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = `${color}20`;
+                          }}
+                        >
+                          <div className="min-w-0">
+                            <p className="text-sm font-mono truncate" style={{ color }}>{lib.name}</p>
+                            <p className="text-xs text-zinc-500 truncate">{lib.description}</p>
+                          </div>
+                          <ExternalLink size={14} className="text-zinc-600 shrink-0 ml-2 transition-colors" style={{ color: `${color}80` }} />
+                        </motion.button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>

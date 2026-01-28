@@ -21,12 +21,12 @@ export default function SystemStatus({ uptime, memory, cpu, dockerContainers }: 
   const memoryPercent = Math.round((memory.used / memory.total) * 100);
   
   return (
-    <div className="card-terminal p-6">
+    <div className="rounded-lg p-6 bg-[#0a0a0a] border border-[#14b8a6]/10">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="p-2 border border-[#00ff00]/30 rounded-lg bg-[#00ff00]/5">
-            <Server size={18} className="text-[#00ff00]" />
+          <div className="p-2 border border-[#14b8a6]/30 rounded-lg bg-[#14b8a6]/5">
+            <Server size={18} className="text-[#14b8a6]" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-white font-mono">System Status</h3>
@@ -34,19 +34,19 @@ export default function SystemStatus({ uptime, memory, cpu, dockerContainers }: 
           </div>
         </div>
         
-        <button className="p-2 text-zinc-500 hover:text-[#00ff00] transition-colors border border-zinc-700 hover:border-[#00ff00]/30 rounded-lg">
+        <button className="p-2 text-zinc-500 hover:text-[#14b8a6] transition-colors border border-zinc-700 hover:border-[#14b8a6]/30 rounded-lg">
           <RefreshCw size={16} />
         </button>
       </div>
       
       {/* Uptime */}
-      <div className="mb-6 p-4 rounded-lg bg-black/30 border border-[#00ff00]/10">
+      <div className="mb-6 p-4 rounded-lg bg-black/30 border border-[#14b8a6]/10">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs text-zinc-500 font-mono uppercase mb-1">System Uptime</p>
             <p className="text-2xl font-bold text-white font-mono">{uptime}</p>
           </div>
-          <div className="px-3 py-1 rounded text-xs font-mono text-[#00ff00] bg-[#00ff00]/10 border border-[#00ff00]/20">
+          <div className="px-3 py-1 rounded text-xs font-mono text-[#14b8a6] bg-[#14b8a6]/10 border border-[#14b8a6]/20">
             Healthy
           </div>
         </div>
