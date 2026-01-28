@@ -77,14 +77,14 @@ export default function ToolModal({ tool, onClose }: ToolModalProps) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg bg-[#0a0a0a] border border-[#00ff00]/20 rounded-lg overflow-hidden"
+        className="w-full max-w-lg bg-[#0a0a0a] border border-[#0ea5e9]/20 rounded-lg overflow-hidden"
       >
         {/* Header */}
-        <div className="p-6 border-b border-[#00ff00]/10">
+        <div className="p-6 border-b border-[#0ea5e9]/10">
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-4">
-              <div className="p-3 rounded-lg bg-[#00ff00]/5 border border-[#00ff00]/20">
-                <Icon size={24} className="text-[#00ff00]" />
+              <div className="p-3 rounded-lg bg-[#0ea5e9]/5 border border-[#0ea5e9]/20">
+                <Icon size={24} className="text-[#0ea5e9]" />
               </div>
               <div>
                 <h3 className="text-xl font-bold text-white font-mono">{tool.name}</h3>
@@ -104,31 +104,31 @@ export default function ToolModal({ tool, onClose }: ToolModalProps) {
         </div>
         
         {/* Command */}
-        <div className="p-6 border-b border-[#00ff00]/10">
+        <div className="p-6 border-b border-[#0ea5e9]/10">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-zinc-500 font-mono uppercase">Quick Start</span>
             <button
               onClick={handleCopyCommand}
-              className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-[#00ff00] transition-colors"
+              className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-[#0ea5e9] transition-colors"
             >
-              {copied ? <Check size={12} className="text-[#00ff00]" /> : <Copy size={12} />}
+              {copied ? <Check size={12} className="text-[#0ea5e9]" /> : <Copy size={12} />}
               {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
-          <div className="p-3 bg-black rounded-md border border-[#00ff00]/10 font-mono text-sm">
+          <div className="p-3 bg-black rounded-md border border-[#0ea5e9]/10 font-mono text-sm">
             <span className="text-zinc-500">$</span>{' '}
-            <span className="text-[#00ff00]">{tool.name}</span>{' '}
+            <span className="text-[#0ea5e9]">{tool.name}</span>{' '}
             <span className="text-zinc-400">--help</span>
           </div>
         </div>
         
         {/* Stats */}
-        <div className="p-6 border-b border-[#00ff00]/10">
+        <div className="p-6 border-b border-[#0ea5e9]/10">
           <div className="grid grid-cols-3 gap-4">
             {tool.tests !== undefined && (
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1.5 mb-1">
-                  <FlaskConical size={14} className="text-[#00ff00]" />
+                  <FlaskConical size={14} className="text-[#0ea5e9]" />
                   <span className="text-xs text-zinc-500 font-mono">Tests</span>
                 </div>
                 <p className="text-xl font-bold text-white font-mono">{tool.tests}</p>
@@ -137,7 +137,7 @@ export default function ToolModal({ tool, onClose }: ToolModalProps) {
             {tool.downloads !== undefined && (
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1.5 mb-1">
-                  <Download size={14} className="text-[#00ff00]" />
+                  <Download size={14} className="text-[#0ea5e9]" />
                   <span className="text-xs text-zinc-500 font-mono">Downloads</span>
                 </div>
                 <p className="text-xl font-bold text-white font-mono">{tool.downloads.toLocaleString()}</p>
@@ -146,7 +146,7 @@ export default function ToolModal({ tool, onClose }: ToolModalProps) {
             {tool.category && (
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1.5 mb-1">
-                  <Folder size={14} className="text-[#00ff00]" />
+                  <Folder size={14} className="text-[#0ea5e9]" />
                   <span className="text-xs text-zinc-500 font-mono">Category</span>
                 </div>
                 <p className="text-lg font-semibold text-white font-mono capitalize">{tool.category}</p>

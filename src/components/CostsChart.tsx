@@ -28,7 +28,7 @@ interface CostsChartProps {
 }
 
 const providerColors = {
-  openai: { main: '#00ff00', light: 'rgba(0, 255, 0, 0.1)' },
+  openai: { main: '#0ea5e9', light: 'rgba(0, 255, 0, 0.1)' },
   anthropic: { main: '#00ffff', light: 'rgba(0, 255, 255, 0.1)' },
   google: { main: '#ffff00', light: 'rgba(255, 255, 0, 0.1)' },
 };
@@ -47,7 +47,7 @@ export default function CostsChart({ daily, monthly }: CostsChartProps) {
   const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number; name: string; color: string }>; label?: string }) => {
     if (!active || !payload) return null;
     return (
-      <div className="bg-[#0a0a0a] border border-[#00ff00]/20 rounded-lg p-3 shadow-lg">
+      <div className="bg-[#0a0a0a] border border-[#0ea5e9]/20 rounded-lg p-3 shadow-lg">
         <p className="text-xs text-zinc-500 font-mono mb-2">{label}</p>
         {payload.map((entry, index) => (
           <div key={index} className="flex items-center gap-2 text-sm">
@@ -78,7 +78,7 @@ export default function CostsChart({ daily, monthly }: CostsChartProps) {
         
         <div className={cn(
           "flex items-center gap-1 px-2 py-1 rounded text-sm font-mono",
-          percentChange < 0 ? "text-[#00ff00] bg-[#00ff00]/10" : "text-[#ef4444] bg-[#ef4444]/10"
+          percentChange < 0 ? "text-[#0ea5e9] bg-[#0ea5e9]/10" : "text-[#ef4444] bg-[#ef4444]/10"
         )}>
           {percentChange < 0 ? <TrendingDown size={14} /> : <TrendingUp size={14} />}
           {Math.abs(percentChange)}%
@@ -149,7 +149,7 @@ export default function CostsChart({ daily, monthly }: CostsChartProps) {
       </div>
       
       {/* Totals */}
-      <div className="grid grid-cols-4 gap-4 pt-4 border-t border-[#00ff00]/10">
+      <div className="grid grid-cols-4 gap-4 pt-4 border-t border-[#0ea5e9]/10">
         <div>
           <p className="text-2xl font-bold text-white font-mono">${monthly.total}</p>
           <p className="text-xs text-zinc-500 font-mono">Total MTD</p>

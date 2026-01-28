@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Globe, Wifi, WifiOff, Monitor, Smartphone, Laptop, RefreshCw } from 'lucide-react';
+import { Network, RefreshCw, Laptop, Smartphone, Monitor, Globe } from 'lucide-react';
 import { pulsed, TailscaleResponse, TailscaleDevice } from '@/lib/pulsed';
 
 const getDeviceIcon = (os?: string) => {
-  if (!os) return Monitor;
+  if (!os) return Globe;
   const lower = os.toLowerCase();
+  if (lower.includes('mac') || lower.includes('darwin')) return Laptop;
   if (lower.includes('ios') || lower.includes('android')) return Smartphone;
-  if (lower.includes('mac') || lower.includes('windows') || lower.includes('linux')) return Laptop;
-  return Monitor;
+  if (lower.includes('windows') || lower.includes('linux')) return Monitor;
+  return Globe;
 };
 
 export default function TailscaleWidget() {
@@ -37,17 +38,17 @@ export default function TailscaleWidget() {
   }, []);
 
   return (
-    <div className="rounded-lg p-6 bg-[#0a0a0a] border border-[#3b82f6]/10">
+    <div className="widget">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <div className="p-2 border border-[#3b82f6]/30 rounded-lg bg-[#3b82f6]/5">
-            <Globe size={18} className="text-[#3b82f6]" />
+          <div className="widget-icon sky">
+            <Network size={18} />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white font-mono">Tailscale</h3>
+            <h3 className="text-base font-semibold text-white">Tailscale</h3>
             {data && (
-              <p className="text-xs text-zinc-500 font-mono">
+              <p className="text-xs text-slate-500">
                 {data.online_count}/{data.devices.length} online
               </p>
             )}
@@ -55,44 +56,43 @@ export default function TailscaleWidget() {
         </div>
         <button
           onClick={fetchData}
-          className="p-2 text-zinc-500 hover:text-[#3b82f6] transition-colors border border-zinc-800 hover:border-[#3b82f6]/30 rounded-lg"
+          className="btn-ghost"
+          title="Refresh"
         >
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
         </button>
       </div>
 
       {error ? (
-        <div className="text-center py-8 text-zinc-500">
-          <WifiOff className="mx-auto mb-2 opacity-50" size={24} />
+        <div className="text-center py-8 text-slate-500">
+          <Network className="mx-auto mb-2 opacity-50" size={24} />
           <p className="text-sm">{error}</p>
         </div>
       ) : (
         <div className="space-y-2">
           {data?.devices.map((device, index) => {
-            const Icon = getDeviceIcon(device.os);
+            const DeviceIcon = getDeviceIcon(device.os);
             return (
               <motion.div
                 key={device.ip}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex items-center justify-between p-3 rounded-lg bg-black/30 border border-zinc-800/50 hover:border-[#3b82f6]/20 transition-all"
+                className="list-item"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`p-1.5 rounded ${device.online ? 'bg-[#3b82f6]/10' : 'bg-zinc-800/50'}`}>
-                    <Icon size={14} className={device.online ? 'text-[#3b82f6]' : 'text-zinc-600'} />
+                  <div className={`p-1.5 rounded-md ${device.online ? 'bg-emerald-500/10' : 'bg-slate-700/50'}`}>
+                    <DeviceIcon 
+                      size={14} 
+                      className={device.online ? 'text-emerald-400' : 'text-slate-500'} 
+                    />
                   </div>
                   <div>
-                    <p className="text-sm text-zinc-200 font-mono">{device.name}</p>
-                    <p className="text-xs text-zinc-600 font-mono">{device.ip}</p>
+                    <p className="text-sm font-medium text-slate-200">{device.name}</p>
+                    <p className="text-xs text-slate-500 font-mono">{device.ip}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {device.os && (
-                    <span className="text-xs text-zinc-600 font-mono">{device.os}</span>
-                  )}
-                  <div className={`w-2 h-2 rounded-full ${device.online ? 'bg-[#00ff00]' : 'bg-zinc-600'}`} />
-                </div>
+                <div className={`status-dot ${device.online ? 'status-online' : 'status-offline'}`} />
               </motion.div>
             );
           })}

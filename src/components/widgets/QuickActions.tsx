@@ -4,57 +4,119 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Zap, Terminal, RefreshCw, Trash2, Download, 
-  Play, Square, RotateCcw, FolderOpen, Settings 
+  FolderOpen, Settings, ExternalLink, RotateCcw
 } from 'lucide-react';
+import { pulsed } from '@/lib/pulsed';
 
 interface Action {
   id: string;
   name: string;
+  description: string;
   icon: React.ElementType;
   color: string;
-  command?: string;
-  url?: string;
+  type: 'url' | 'docker' | 'command';
+  target?: string;
+  containerId?: string;
 }
 
 const actions: Action[] = [
-  { id: 'restart-docker', name: 'Restart Docker', icon: RotateCcw, color: '#ec4899', command: 'docker restart $(docker ps -q)' },
-  { id: 'clear-cache', name: 'Clear Cache', icon: Trash2, color: '#ef4444', command: 'rm -rf ~/.cache/*' },
-  { id: 'update-brew', name: 'Brew Update', icon: Download, color: '#00ff00', command: 'brew update && brew upgrade' },
-  { id: 'open-terminal', name: 'Terminal', icon: Terminal, color: '#00ffff', url: 'iterm://' },
-  { id: 'open-finder', name: 'Projects', icon: FolderOpen, color: '#f97316', url: 'file:///Volumes/Illegg/clawdbot/workspace/projects' },
-  { id: 'system-prefs', name: 'Settings', icon: Settings, color: '#a855f7', url: 'x-apple.systempreferences://' },
+  { 
+    id: 'restart-glance', 
+    name: 'Restart Glance', 
+    description: 'Restart dashboard',
+    icon: RotateCcw, 
+    color: '#8b5cf6',
+    type: 'docker',
+    containerId: 'glance'
+  },
+  { 
+    id: 'open-terminal', 
+    name: 'Terminal', 
+    description: 'Open iTerm',
+    icon: Terminal, 
+    color: '#0ea5e9',
+    type: 'url',
+    target: 'iterm://'
+  },
+  { 
+    id: 'open-finder', 
+    name: 'Projects', 
+    description: 'Open workspace',
+    icon: FolderOpen, 
+    color: '#f59e0b',
+    type: 'url',
+    target: 'file:///Volumes/Illegg/clawdbot/workspace/projects'
+  },
+  { 
+    id: 'system-prefs', 
+    name: 'Settings', 
+    description: 'System settings',
+    icon: Settings, 
+    color: '#64748b',
+    type: 'url',
+    target: 'x-apple.systempreferences://'
+  },
+  { 
+    id: 'uptime-kuma', 
+    name: 'Uptime Kuma', 
+    description: 'Open monitoring',
+    icon: ExternalLink, 
+    color: '#10b981',
+    type: 'url',
+    target: 'http://localhost:19999'
+  },
+  { 
+    id: 'dashy', 
+    name: 'Dashy', 
+    description: 'Open dashboard',
+    icon: ExternalLink, 
+    color: '#ec4899',
+    type: 'url',
+    target: 'http://localhost:4000'
+  },
 ];
 
 export default function QuickActions() {
   const [running, setRunning] = useState<string | null>(null);
+  const [status, setStatus] = useState<{ id: string; success: boolean } | null>(null);
 
   const handleAction = async (action: Action) => {
-    if (action.url) {
-      window.open(action.url, '_blank');
+    if (action.type === 'url' && action.target) {
+      window.open(action.target, '_blank');
       return;
     }
 
-    if (action.command) {
+    if (action.type === 'docker' && action.containerId) {
       setRunning(action.id);
-      // In a real implementation, this would call an API
-      // For now, just simulate
-      setTimeout(() => {
+      try {
+        // Find container by name
+        const containers = await pulsed.docker();
+        const container = containers.containers.find(c => c.name === action.containerId);
+        if (container) {
+          await pulsed.dockerRestart(container.id);
+          setStatus({ id: action.id, success: true });
+        } else {
+          setStatus({ id: action.id, success: false });
+        }
+      } catch (e) {
+        setStatus({ id: action.id, success: false });
+      } finally {
         setRunning(null);
-        alert(`Would run: ${action.command}`);
-      }, 1000);
+        setTimeout(() => setStatus(null), 2000);
+      }
     }
   };
 
   return (
-    <div className="rounded-lg p-6 bg-[#0a0a0a] border border-[#facc15]/10">
+    <div className="widget">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 border border-[#facc15]/30 rounded-lg bg-[#facc15]/5">
-          <Zap size={18} className="text-[#facc15]" />
+      <div className="flex items-center gap-3 mb-5">
+        <div className="widget-icon amber">
+          <Zap size={18} />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-white font-mono">Quick Actions</h3>
-          <p className="text-xs text-zinc-500 font-mono">Common tasks</p>
+          <h3 className="text-base font-semibold text-white">Quick Actions</h3>
+          <p className="text-xs text-slate-500">Common tasks</p>
         </div>
       </div>
 
@@ -63,6 +125,8 @@ export default function QuickActions() {
         {actions.map((action, index) => {
           const Icon = action.icon;
           const isRunning = running === action.id;
+          const actionStatus = status?.id === action.id ? status : null;
+          
           return (
             <motion.button
               key={action.id}
@@ -71,28 +135,29 @@ export default function QuickActions() {
               transition={{ delay: index * 0.05 }}
               onClick={() => handleAction(action)}
               disabled={isRunning}
-              className="flex items-center gap-2 p-3 rounded-lg bg-black/30 border border-zinc-800/50 hover:border-opacity-50 transition-all text-left disabled:opacity-50"
-              style={{ 
-                '--hover-border': action.color,
-              } as React.CSSProperties}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = `${action.color}50`;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = '';
-              }}
+              className="flex flex-col items-start gap-1.5 p-3 rounded-lg bg-slate-800/30 border border-slate-700/30 hover:border-slate-600/50 transition-all text-left disabled:opacity-50"
             >
-              <div 
-                className="p-1.5 rounded"
-                style={{ backgroundColor: `${action.color}15` }}
-              >
-                <Icon 
-                  size={14} 
-                  style={{ color: action.color }}
-                  className={isRunning ? 'animate-spin' : ''} 
-                />
+              <div className="flex items-center justify-between w-full">
+                <div 
+                  className="p-1.5 rounded-md"
+                  style={{ backgroundColor: `${action.color}15` }}
+                >
+                  <Icon 
+                    size={14} 
+                    style={{ color: action.color }}
+                    className={isRunning ? 'animate-spin' : ''} 
+                  />
+                </div>
+                {actionStatus && (
+                  <span className={`text-xs ${actionStatus.success ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    {actionStatus.success ? '✓' : '✗'}
+                  </span>
+                )}
               </div>
-              <span className="text-sm text-zinc-300 font-mono truncate">{action.name}</span>
+              <div>
+                <span className="text-sm font-medium text-slate-200">{action.name}</span>
+                <p className="text-xs text-slate-500">{action.description}</p>
+              </div>
             </motion.button>
           );
         })}

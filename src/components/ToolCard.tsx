@@ -51,7 +51,7 @@ const iconMap: Record<string, ElementType> = {
 
 // Multi-color palette based on tool index or category
 const colorPalette = [
-  { main: '#00ff00', bg: 'rgba(0, 255, 0, 0.1)', border: 'rgba(0, 255, 0, 0.2)' },      // Green
+  { main: '#0ea5e9', bg: 'rgba(0, 255, 0, 0.1)', border: 'rgba(0, 255, 0, 0.2)' },      // Green
   { main: '#00ffff', bg: 'rgba(0, 255, 255, 0.1)', border: 'rgba(0, 255, 255, 0.2)' },  // Cyan
   { main: '#a855f7', bg: 'rgba(168, 85, 247, 0.1)', border: 'rgba(168, 85, 247, 0.2)' }, // Purple
   { main: '#f97316', bg: 'rgba(249, 115, 22, 0.1)', border: 'rgba(249, 115, 22, 0.2)' }, // Orange
@@ -75,7 +75,7 @@ export default function ToolCard({ tool, index, onClick }: ToolCardProps) {
   const color = colorPalette[index % colorPalette.length];
   
   const statusColors: Record<string, { text: string; bg: string; border: string }> = {
-    stable: { text: '#00ff00', bg: 'rgba(0, 255, 0, 0.1)', border: 'rgba(0, 255, 0, 0.3)' },
+    stable: { text: '#0ea5e9', bg: 'rgba(0, 255, 0, 0.1)', border: 'rgba(0, 255, 0, 0.3)' },
     beta: { text: '#facc15', bg: 'rgba(250, 204, 21, 0.1)', border: 'rgba(250, 204, 21, 0.3)' },
     alpha: { text: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.3)' },
   };

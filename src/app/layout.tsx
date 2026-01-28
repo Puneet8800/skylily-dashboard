@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import "./globals.css";
+import TabBar from "@/components/navigation/TabBar";
 
 export const metadata: Metadata = {
   title: "Skylily Dashboard | AI Orchestration Platform",
@@ -19,9 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark ${GeistSans.variable} ${GeistMono.variable}`}>
       <body className={`${GeistSans.className} min-h-screen antialiased`}>
-        <main className="relative">
+        <main className="relative pb-20">
           {children}
         </main>
+        <TabBar />
       </body>
     </html>
   );

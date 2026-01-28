@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Container, RefreshCw, Play, Square, RotateCcw, FileText, X, ChevronDown } from 'lucide-react';
+import { Container, RefreshCw, RotateCcw, FileText, X, ChevronDown } from 'lucide-react';
 import { pulsed, Container as ContainerType, DockerResponse } from '@/lib/pulsed';
 import { cn } from '@/lib/utils';
 
@@ -66,25 +66,25 @@ export default function DockerWidget() {
 
   const getStateColor = (state: string) => {
     switch (state) {
-      case 'running': return '#00ff00';
-      case 'paused': return '#facc15';
-      case 'exited': return '#ef4444';
-      default: return '#71717a';
+      case 'running': return 'bg-emerald-400';
+      case 'paused': return 'bg-amber-400';
+      case 'exited': return 'bg-rose-400';
+      default: return 'bg-slate-500';
     }
   };
 
   return (
-    <div className="rounded-lg p-6 bg-[#0a0a0a] border border-[#ec4899]/10">
+    <div className="widget">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <div className="p-2 border border-[#ec4899]/30 rounded-lg bg-[#ec4899]/5">
-            <Container size={18} className="text-[#ec4899]" />
+          <div className="widget-icon violet">
+            <Container size={18} />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white font-mono">Docker</h3>
+            <h3 className="text-base font-semibold text-white">Docker</h3>
             {data && (
-              <p className="text-xs text-zinc-500 font-mono">
+              <p className="text-xs text-slate-500">
                 {data.running}/{data.total} running
               </p>
             )}
@@ -92,14 +92,15 @@ export default function DockerWidget() {
         </div>
         <button
           onClick={fetchContainers}
-          className="p-2 text-zinc-500 hover:text-[#ec4899] transition-colors border border-zinc-800 hover:border-[#ec4899]/30 rounded-lg"
+          className="btn-ghost"
+          title="Refresh"
         >
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
         </button>
       </div>
 
       {error ? (
-        <div className="text-center py-8 text-zinc-500">
+        <div className="text-center py-8 text-slate-500">
           <Container className="mx-auto mb-2 opacity-50" size={24} />
           <p className="text-sm">{error}</p>
         </div>
@@ -113,22 +114,19 @@ export default function DockerWidget() {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex items-center justify-between p-3 rounded-lg bg-black/30 border border-zinc-800/50 hover:border-[#ec4899]/20 transition-all group"
+                className="list-item group"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div
-                    className="w-2 h-2 rounded-full shrink-0"
-                    style={{ backgroundColor: getStateColor(container.state) }}
-                  />
+                  <div className={cn("status-dot shrink-0", getStateColor(container.state))} />
                   <div className="min-w-0">
-                    <p className="text-sm text-zinc-200 font-mono truncate">{container.name}</p>
-                    <p className="text-xs text-zinc-600 truncate">{container.status}</p>
+                    <p className="text-sm font-medium text-slate-200 truncate">{container.name}</p>
+                    <p className="text-xs text-slate-500 truncate">{container.status}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => handleViewLogs(container.id)}
-                    className="p-1.5 text-zinc-500 hover:text-[#00ffff] transition-colors"
+                    className="btn-ghost p-1.5"
                     title="View logs"
                   >
                     <FileText size={14} />
@@ -136,7 +134,7 @@ export default function DockerWidget() {
                   <button
                     onClick={() => handleRestart(container.id, container.name)}
                     disabled={restarting === container.id}
-                    className="p-1.5 text-zinc-500 hover:text-[#f97316] transition-colors disabled:opacity-50"
+                    className="btn-ghost p-1.5 hover:text-amber-400 disabled:opacity-50"
                     title="Restart"
                   >
                     <RotateCcw size={14} className={restarting === container.id ? 'animate-spin' : ''} />
@@ -150,10 +148,9 @@ export default function DockerWidget() {
           {data && data.containers.length > 5 && (
             <button
               onClick={() => setShowAll(!showAll)}
-              className="w-full mt-4 py-2.5 rounded-lg text-sm font-mono bg-[#ec4899]/5 border border-[#ec4899]/10 text-zinc-400 hover:text-[#ec4899] hover:border-[#ec4899]/30 transition-all flex items-center justify-center gap-2"
+              className="w-full mt-4 py-2.5 rounded-lg text-sm bg-slate-800/30 border border-slate-700/30 text-slate-400 hover:text-white hover:border-slate-600/50 transition-all flex items-center justify-center gap-2"
             >
-              <span className="text-zinc-600">&gt;</span>
-              {showAll ? 'show_less' : `view_all --count ${data.containers.length}`}
+              {showAll ? 'Show Less' : `View All (${data.containers.length})`}
               <ChevronDown size={14} className={cn("transition-transform", showAll && "rotate-180")} />
             </button>
           )}
@@ -167,30 +164,30 @@ export default function DockerWidget() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+            className="modal-overlay"
             onClick={() => setSelectedContainer(null)}
           >
             <motion.div
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
-              className="bg-[#0a0a0a] border border-zinc-800 rounded-lg w-full max-w-3xl max-h-[80vh] overflow-hidden"
+              className="modal-content w-full max-w-3xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between p-4 border-b border-zinc-800">
-                <h4 className="font-mono text-white">Container Logs</h4>
+              <div className="flex items-center justify-between p-4 border-b border-slate-700/50">
+                <h4 className="font-medium text-white">Container Logs</h4>
                 <button
                   onClick={() => setSelectedContainer(null)}
-                  className="p-1 text-zinc-500 hover:text-white"
+                  className="btn-ghost p-1"
                 >
                   <X size={18} />
                 </button>
               </div>
-              <div className="p-4 overflow-auto max-h-[60vh] bg-black">
+              <div className="p-4 overflow-auto max-h-[60vh]">
                 {loadingLogs ? (
-                  <p className="text-zinc-500 text-center">Loading...</p>
+                  <p className="text-slate-500 text-center py-4">Loading...</p>
                 ) : (
-                  <pre className="text-xs text-zinc-400 font-mono whitespace-pre-wrap">
+                  <pre className="code-block text-xs whitespace-pre-wrap">
                     {logs.join('\n') || 'No logs available'}
                   </pre>
                 )}

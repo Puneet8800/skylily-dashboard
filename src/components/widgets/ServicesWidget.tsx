@@ -12,10 +12,10 @@ const getStatusIcon = (status: string) => {
   return AlertTriangle;
 };
 
-const getStatusColor = (status: string) => {
-  if (status === 'healthy') return '#00ff00';
-  if (status === 'timeout') return '#facc15';
-  return '#ef4444';
+const getStatusStyle = (status: string) => {
+  if (status === 'healthy') return { color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' };
+  if (status === 'timeout') return { color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' };
+  return { color: '#f43f5e', bg: 'rgba(244, 63, 94, 0.1)' };
 };
 
 export default function ServicesWidget() {
@@ -43,17 +43,17 @@ export default function ServicesWidget() {
   }, []);
 
   return (
-    <div className="rounded-lg p-6 bg-[#0a0a0a] border border-[#14b8a6]/10">
+    <div className="widget">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <div className="p-2 border border-[#14b8a6]/30 rounded-lg bg-[#14b8a6]/5">
-            <Activity size={18} className="text-[#14b8a6]" />
+          <div className="widget-icon teal">
+            <Activity size={18} />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white font-mono">Services</h3>
+            <h3 className="text-base font-semibold text-white">Services</h3>
             {data && (
-              <p className="text-xs text-zinc-500 font-mono">
+              <p className="text-xs text-slate-500">
                 {data.healthy}/{data.total} healthy
               </p>
             )}
@@ -61,19 +61,20 @@ export default function ServicesWidget() {
         </div>
         <button
           onClick={fetchData}
-          className="p-2 text-zinc-500 hover:text-[#14b8a6] transition-colors border border-zinc-800 hover:border-[#14b8a6]/30 rounded-lg"
+          className="btn-ghost"
+          title="Refresh"
         >
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
         </button>
       </div>
 
       {error ? (
-        <div className="text-center py-8 text-zinc-500">
+        <div className="text-center py-8 text-slate-500">
           <Activity className="mx-auto mb-2 opacity-50" size={24} />
           <p className="text-sm">{error}</p>
         </div>
       ) : data?.services.length === 0 ? (
-        <div className="text-center py-8 text-zinc-500">
+        <div className="text-center py-8 text-slate-500">
           <p className="text-sm">No services configured</p>
           <p className="text-xs mt-1">Add services in pulsed config</p>
         </div>
@@ -81,7 +82,7 @@ export default function ServicesWidget() {
         <div className="space-y-2">
           {data?.services.map((service, index) => {
             const StatusIcon = getStatusIcon(service.status);
-            const statusColor = getStatusColor(service.status);
+            const style = getStatusStyle(service.status);
             return (
               <motion.a
                 key={service.name}
@@ -91,25 +92,25 @@ export default function ServicesWidget() {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex items-center justify-between p-3 rounded-lg bg-black/30 border border-zinc-800/50 hover:border-[#14b8a6]/20 transition-all group"
+                className="list-item group"
               >
                 <div className="flex items-center gap-3">
                   <div 
-                    className="p-1.5 rounded"
-                    style={{ backgroundColor: `${statusColor}15` }}
+                    className="p-1.5 rounded-md"
+                    style={{ backgroundColor: style.bg }}
                   >
-                    <StatusIcon size={14} style={{ color: statusColor }} />
+                    <StatusIcon size={14} style={{ color: style.color }} />
                   </div>
                   <div>
-                    <p className="text-sm text-zinc-200 font-mono">{service.name}</p>
+                    <p className="text-sm font-medium text-slate-200">{service.name}</p>
                     {service.latency_ms && (
-                      <p className="text-xs text-zinc-600 font-mono">{service.latency_ms}ms</p>
+                      <p className="text-xs text-slate-500">{service.latency_ms}ms</p>
                     )}
                   </div>
                 </div>
                 <ExternalLink 
                   size={14} 
-                  className="text-zinc-600 group-hover:text-[#14b8a6] transition-colors" 
+                  className="text-slate-600 group-hover:text-sky-400 transition-colors" 
                 />
               </motion.a>
             );
