@@ -3,12 +3,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, 
-  CartesianGrid
+  AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { TrendingDown, TrendingUp, DollarSign, Eye, EyeOff } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { TrendingDown, TrendingUp, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DailyData {
@@ -31,9 +28,9 @@ interface CostsChartProps {
 }
 
 const providerColors = {
-  openai: { main: '#10b981', light: 'rgba(16, 185, 129, 0.15)' },
-  anthropic: { main: '#f97316', light: 'rgba(249, 115, 22, 0.15)' },
-  google: { main: '#06b6d4', light: 'rgba(6, 182, 212, 0.15)' },
+  openai: { main: '#00ff00', light: 'rgba(0, 255, 0, 0.1)' },
+  anthropic: { main: '#00ffff', light: 'rgba(0, 255, 255, 0.1)' },
+  google: { main: '#ffff00', light: 'rgba(255, 255, 0, 0.1)' },
 };
 
 export default function CostsChart({ daily, monthly }: CostsChartProps) {
@@ -48,207 +45,124 @@ export default function CostsChart({ daily, monthly }: CostsChartProps) {
   };
 
   const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number; name: string; color: string }>; label?: string }) => {
-    if (active && payload && payload.length) {
-      return (
-        <motion.div
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-zinc-900/95 backdrop-blur-md rounded-xl p-4 border border-white/[0.08] shadow-2xl"
-        >
-          <p className="text-sm font-medium text-white mb-3">{label}</p>
-          <div className="space-y-2">
-            {payload.map((entry, index) => (
-              <div key={index} className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
-                  <div 
-                    className="w-2 h-2 rounded-full" 
-                    style={{ backgroundColor: entry.color }}
-                  />
-                  <span className="text-sm text-zinc-400 capitalize">{entry.name}</span>
-                </div>
-                <span className="text-sm font-medium text-white">${entry.value.toFixed(2)}</span>
-              </div>
-            ))}
+    if (!active || !payload) return null;
+    return (
+      <div className="bg-[#0a0a0a] border border-[#00ff00]/20 rounded-lg p-3 shadow-lg">
+        <p className="text-xs text-zinc-500 font-mono mb-2">{label}</p>
+        {payload.map((entry, index) => (
+          <div key={index} className="flex items-center gap-2 text-sm">
+            <div className="w-2 h-2 rounded-full" style={{ background: entry.color }} />
+            <span className="text-zinc-400 font-mono">{entry.name}:</span>
+            <span className="text-white font-mono font-semibold">${entry.value.toFixed(2)}</span>
           </div>
-          <div className="mt-3 pt-3 border-t border-white/[0.08]">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-zinc-500">Total</span>
-              <span className="text-sm font-bold text-white">
-                ${payload.reduce((sum, p) => sum + p.value, 0).toFixed(2)}
-              </span>
-            </div>
-          </div>
-        </motion.div>
-      );
-    }
-    return null;
+        ))}
+      </div>
+    );
   };
 
   const percentChange = -12.3; // Mock data
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-      className={cn(
-        "rounded-2xl p-6",
-        "bg-gradient-to-b from-white/[0.04] to-white/[0.01]",
-        "border border-white/[0.08]"
-      )}
-    >
+    <div className="card-terminal p-6">
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <DollarSign size={18} className="text-teal-500" />
-            <h2 className="text-lg font-semibold text-white">API Costs</h2>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="p-2 border border-[#00ff00]/30 rounded-lg bg-[#00ff00]/5">
+            <DollarSign size={18} className="text-[#00ff00]" />
           </div>
-          <p className="text-sm text-zinc-500">Last 7 days spending</p>
+          <div>
+            <h3 className="text-lg font-bold text-white font-mono">API Costs</h3>
+            <p className="text-xs text-zinc-500 font-mono">Last 7 days spending</p>
+          </div>
         </div>
         
-        <Badge 
-          variant="outline"
-          className={cn(
-            "flex items-center gap-1.5",
-            percentChange < 0 
-              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
-              : "bg-amber-500/10 text-amber-400 border-amber-500/20"
-          )}
-        >
+        <div className={cn(
+          "flex items-center gap-1 px-2 py-1 rounded text-sm font-mono",
+          percentChange < 0 ? "text-[#00ff00] bg-[#00ff00]/10" : "text-red-400 bg-red-400/10"
+        )}>
           {percentChange < 0 ? <TrendingDown size={14} /> : <TrendingUp size={14} />}
-          <span className="font-medium">{Math.abs(percentChange)}%</span>
-        </Badge>
+          {Math.abs(percentChange)}%
+        </div>
       </div>
       
-      {/* Provider Toggle */}
-      <div className="flex items-center gap-2 mb-6">
+      {/* Provider Toggles */}
+      <div className="flex flex-wrap gap-2 mb-6">
         {Object.entries(providerColors).map(([provider, colors]) => (
-          <Button
+          <button
             key={provider}
-            variant="outline"
-            size="sm"
             onClick={() => toggleProvider(provider)}
             className={cn(
-              "h-8 px-3 text-xs font-medium transition-all",
+              "px-3 py-1.5 rounded-full text-xs font-mono border transition-all",
               activeProviders[provider]
-                ? "bg-white/[0.05] border-white/[0.15] text-white"
-                : "bg-transparent border-white/[0.05] text-zinc-600 opacity-50"
+                ? "border-current bg-current/10"
+                : "border-zinc-700 text-zinc-500"
             )}
+            style={{ 
+              color: activeProviders[provider] ? colors.main : undefined,
+              borderColor: activeProviders[provider] ? colors.main : undefined 
+            }}
           >
-            <div 
-              className="w-2 h-2 rounded-full mr-2"
-              style={{ backgroundColor: activeProviders[provider] ? colors.main : 'currentColor' }}
-            />
-            <span className="capitalize">{provider}</span>
-            {activeProviders[provider] ? (
-              <Eye size={12} className="ml-2 opacity-50" />
-            ) : (
-              <EyeOff size={12} className="ml-2 opacity-50" />
-            )}
-          </Button>
+            {provider}
+          </button>
         ))}
       </div>
       
       {/* Chart */}
-      <div className="h-64 mb-6">
+      <div className="h-48 mb-6">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart 
-            data={daily} 
-            margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
-          >
+          <AreaChart data={daily}>
             <defs>
               {Object.entries(providerColors).map(([provider, colors]) => (
-                <linearGradient key={provider} id={`color-${provider}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={colors.main} stopOpacity={0.25} />
-                  <stop offset="95%" stopColor={colors.main} stopOpacity={0} />
+                <linearGradient key={provider} id={`gradient-${provider}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={colors.main} stopOpacity={0.3} />
+                  <stop offset="100%" stopColor={colors.main} stopOpacity={0} />
                 </linearGradient>
               ))}
             </defs>
-            <CartesianGrid 
-              strokeDasharray="3 3" 
-              stroke="rgba(255,255,255,0.03)" 
-              vertical={false}
-            />
             <XAxis 
               dataKey="date" 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{ fill: '#71717a', fontSize: 12 }}
-              dy={10}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: '#52525b', fontSize: 10, fontFamily: 'JetBrains Mono' }}
             />
             <YAxis 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{ fill: '#71717a', fontSize: 12 }}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: '#52525b', fontSize: 10, fontFamily: 'JetBrains Mono' }}
               tickFormatter={(value) => `$${value}`}
-              dx={-5}
             />
-            <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)' }} />
-            
-            {activeProviders.openai && (
-              <Area
-                type="monotone"
-                dataKey="openai"
-                stroke={providerColors.openai.main}
-                strokeWidth={2}
-                fillOpacity={1}
-                fill="url(#color-openai)"
-                animationDuration={1000}
-              />
-            )}
-            {activeProviders.anthropic && (
-              <Area
-                type="monotone"
-                dataKey="anthropic"
-                stroke={providerColors.anthropic.main}
-                strokeWidth={2}
-                fillOpacity={1}
-                fill="url(#color-anthropic)"
-                animationDuration={1000}
-              />
-            )}
-            {activeProviders.google && (
-              <Area
-                type="monotone"
-                dataKey="google"
-                stroke={providerColors.google.main}
-                strokeWidth={2}
-                fillOpacity={1}
-                fill="url(#color-google)"
-                animationDuration={1000}
-              />
-            )}
+            <Tooltip content={<CustomTooltip />} />
+            {Object.entries(providerColors).map(([provider, colors]) => (
+              activeProviders[provider] && (
+                <Area
+                  key={provider}
+                  type="monotone"
+                  dataKey={provider}
+                  stroke={colors.main}
+                  strokeWidth={2}
+                  fill={`url(#gradient-${provider})`}
+                />
+              )
+            ))}
           </AreaChart>
         </ResponsiveContainer>
       </div>
       
-      {/* Monthly Summary */}
-      <div className="grid grid-cols-4 gap-3">
-        <motion.div 
-          className="bg-white/[0.02] rounded-xl p-3 text-center border border-white/[0.05]"
-          whileHover={{ scale: 1.02, borderColor: 'rgba(255,255,255,0.1)' }}
-        >
-          <p className="text-2xl font-bold text-white">${monthly.total.toFixed(0)}</p>
-          <p className="text-xs text-zinc-500 mt-1">Total MTD</p>
-        </motion.div>
-        
-        {Object.entries(providerColors).map(([provider, colors]) => (
-          <motion.div 
-            key={provider}
-            className="bg-white/[0.02] rounded-xl p-3 text-center border border-white/[0.05]"
-            whileHover={{ scale: 1.02, borderColor: 'rgba(255,255,255,0.1)' }}
-          >
-            <div className="flex items-center justify-center gap-1.5 mb-1">
-              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors.main }} />
-              <p className="text-lg font-semibold text-white">
-                ${(monthly as unknown as Record<string, number>)[provider]}
-              </p>
-            </div>
-            <p className="text-xs text-zinc-500 capitalize">{provider}</p>
-          </motion.div>
+      {/* Totals */}
+      <div className="grid grid-cols-4 gap-4 pt-4 border-t border-[#00ff00]/10">
+        <div>
+          <p className="text-2xl font-bold text-white font-mono">${monthly.total}</p>
+          <p className="text-xs text-zinc-500 font-mono">Total MTD</p>
+        </div>
+        {Object.entries({ openai: monthly.openai, anthropic: monthly.anthropic, google: monthly.google }).map(([provider, value]) => (
+          <div key={provider}>
+            <p className="text-lg font-semibold font-mono" style={{ color: providerColors[provider as keyof typeof providerColors].main }}>
+              ${value}
+            </p>
+            <p className="text-xs text-zinc-500 font-mono capitalize">{provider}</p>
+          </div>
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }

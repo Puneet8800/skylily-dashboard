@@ -4,9 +4,8 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Rocket, CheckCircle2, GitCommit, AlertTriangle, Hammer, 
-  GitPullRequest, Activity, Bell, Clock, ChevronDown
+  GitPullRequest, Activity, Clock, ChevronDown
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ElementType } from 'react';
 
@@ -31,13 +30,13 @@ const iconMap: Record<string, ElementType> = {
   activity: Activity,
 };
 
-const typeConfig: Record<string, { color: string; bg: string; border: string }> = {
-  deploy: { color: 'text-teal-400', bg: 'bg-teal-500/10', border: 'border-teal-500/20' },
-  test: { color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
-  commit: { color: 'text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-500/20' },
-  alert: { color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
-  build: { color: 'text-violet-400', bg: 'bg-violet-500/10', border: 'border-violet-500/20' },
-  pr: { color: 'text-pink-400', bg: 'bg-pink-500/10', border: 'border-pink-500/20' },
+const typeColors: Record<string, string> = {
+  deploy: 'text-[#00ff00] bg-[#00ff00]/10 border-[#00ff00]/20',
+  test: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
+  commit: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
+  alert: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20',
+  build: 'text-violet-400 bg-violet-400/10 border-violet-400/20',
+  pr: 'text-pink-400 bg-pink-400/10 border-pink-400/20',
 };
 
 export default function ActivityFeed({ activities }: ActivityFeedProps) {
@@ -45,34 +44,26 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
   const displayedActivities = showAll ? activities : activities.slice(0, 5);
   
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.4 }}
-      className={cn(
-        "rounded-2xl p-6",
-        "bg-gradient-to-b from-white/[0.04] to-white/[0.01]",
-        "border border-white/[0.08]"
-      )}
-    >
+    <div className="card-terminal p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <Activity size={18} className="text-teal-500" />
-          <h2 className="text-lg font-semibold text-white">Activity Feed</h2>
+        <div className="flex items-center gap-3">
+          <div className="p-2 border border-[#00ff00]/30 rounded-lg bg-[#00ff00]/5">
+            <Activity size={18} className="text-[#00ff00]" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-white font-mono">Activity Feed</h3>
+            <p className="text-xs text-zinc-500 font-mono status-live">LIVE</p>
+          </div>
         </div>
-        <Badge variant="outline" className="bg-white/[0.02] border-white/[0.08] text-zinc-400">
-          <Bell size={12} className="mr-1.5" />
-          Live
-        </Badge>
       </div>
       
       {/* Activity List */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         <AnimatePresence mode="popLayout">
           {displayedActivities.map((activity, index) => {
             const Icon = iconMap[activity.icon] || Activity;
-            const config = typeConfig[activity.type] || typeConfig.deploy;
+            const colors = typeColors[activity.type] || typeColors.deploy;
             
             return (
               <motion.div
@@ -81,22 +72,21 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ delay: index * 0.03 }}
-                whileHover={{ x: 4 }}
                 className={cn(
-                  "flex items-start gap-3 p-3 rounded-xl cursor-pointer",
-                  "bg-white/[0.01] border border-transparent",
-                  "hover:bg-white/[0.03] hover:border-white/[0.05] transition-all"
+                  "flex items-start gap-3 p-3 rounded-lg",
+                  "bg-black/30 border border-[#00ff00]/5",
+                  "hover:border-[#00ff00]/20 transition-all cursor-pointer"
                 )}
               >
-                <div className={cn("p-2 rounded-lg shrink-0", config.bg, config.border, 'border')}>
-                  <Icon size={14} className={config.color} />
+                <div className={cn("p-1.5 rounded border shrink-0", colors)}>
+                  <Icon size={12} />
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white/90 line-clamp-1">{activity.message}</p>
-                  <div className="flex items-center gap-2 mt-1">
+                  <p className="text-sm text-zinc-300 line-clamp-1 font-mono">{activity.message}</p>
+                  <div className="flex items-center gap-1.5 mt-1">
                     <Clock size={10} className="text-zinc-600" />
-                    <span className="text-xs text-zinc-500">{activity.time}</span>
+                    <span className="text-xs text-zinc-500 font-mono">{activity.time}</span>
                   </div>
                 </div>
               </motion.div>
@@ -107,24 +97,23 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
       
       {/* View All Button */}
       {activities.length > 5 && (
-        <motion.button
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.99 }}
+        <button
           onClick={() => setShowAll(!showAll)}
           className={cn(
-            "w-full mt-4 py-3 rounded-xl text-sm font-medium",
-            "bg-white/[0.02] border border-white/[0.05]",
-            "text-zinc-400 hover:text-white hover:bg-white/[0.04] hover:border-white/[0.08]",
+            "w-full mt-4 py-2.5 rounded-lg text-sm font-mono",
+            "bg-[#00ff00]/5 border border-[#00ff00]/10",
+            "text-zinc-400 hover:text-[#00ff00] hover:border-[#00ff00]/30",
             "transition-all flex items-center justify-center gap-2"
           )}
         >
-          {showAll ? 'Show less' : `View all activity (${activities.length})`}
+          <span className="text-zinc-600">&gt;</span>
+          {showAll ? 'show_less' : `view_all --count ${activities.length}`}
           <ChevronDown 
             size={14} 
             className={cn("transition-transform", showAll && "rotate-180")} 
           />
-        </motion.button>
+        </button>
       )}
-    </motion.div>
+    </div>
   );
 }
